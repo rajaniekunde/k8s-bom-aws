@@ -17,7 +17,7 @@ phases:
       - echo "Updating kubeconfig..."
       - aws eks --region "$AWS_REGION" update-kubeconfig --name "$EKS_CLUSTER"
       - aws sts get-caller-identity
-
+      - which aws-iam-authenticator
   build:
     commands:
       - echo "Running Kubernetes BoM generator script..."

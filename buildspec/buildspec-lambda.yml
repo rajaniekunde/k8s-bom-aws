@@ -13,8 +13,9 @@ phases:
       - ls
   post_build:
     commands:
+      - pwd
       - echo "Deploying Lambda function..."
-      - aws lambda update-function-code --function-name k8s-bom-api --zip-file fileb://lambda/deployment_package.zip
+      - aws lambda update-function-code --function-name k8s-bom-api --zip-file fileb://deployment_package.zip
 artifacts:
   files:
     - lambda/deployment_package.zip
