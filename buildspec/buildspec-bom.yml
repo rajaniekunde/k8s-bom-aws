@@ -17,41 +17,58 @@ phases:
       - echo "Using AWS Region: $AWS_REGION"
       - echo "Using EKS Cluster: $EKS_CLUSTER"
       - echo "Updating kubeconfig for EKS..."
-      - aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER
+      - aws eks --region "$AWS_REGION" update-kubeconfig --name "$EKS_CLUSTER"
 
   build:
     commands:
       - echo "Generating Kubernetes Bill of Materials (BoM)..."
 
       # Capture cluster information
-      - kubectl cluster-info dump > cluster_info.json || echo "{}" > cluster_info.json
+      - |
+        kubectl cluster-info dump > cluster_info.json || echo "{}" > cluster_info.json
 
       # Capture nodes
-      - kubectl get nodes -o json > nodes.json || echo "{}" > nodes.json
+      - |
+        kubectl get nodes -o json > nodes.json || echo "{}" > nodes.json
 
       # Capture deployments
-      - kubectl get deployments --all-namespaces -o json > deployments.json || echo "[]" > deployments.json
+      - |
+        kubectl get deployments --all-namespaces -o json > deployments.json || echo "[]" > deployments.json
 
       # Capture services
-      - kubectl get services --all-namespaces -o json > services.json || echo "[]" > services.json
+      - |
+        kubectl get services --all-namespaces -o json > services.json || echo "[]" > services.json
 
       # Capture configmaps
-      - kubectl get configmaps --all-namespaces -o json > configmaps.json || echo "[]" > configmaps.json
+      - |
+        kubectl get configmaps --all-namespaces -o json > configmaps.json || echo "[]" > configmaps.json
 
       # Capture secrets
-      - kubectl get secrets --all-namespaces -o json > secrets.json || echo "[]" > secrets.json
+      - |
+        kubectl get secrets --all-namespaces -o json > secrets.json || echo "[]" > secrets.json
 
       # Capture pods, ensuring empty result if no pods exist
-      - kubectl get pods --all-namespaces -o json | jq '[.items[]? | {namespace: .metadata.namespace, pod: .metadata.name, containers: [.spec.containers[].image]}] // []' > container_images.json || echo "[]" > container_images.json
+      - |
+        kubectl get pods --all-namespaces -o json | jq '[.items[]? | {namespace: .metadata.namespace, pod: .metadata.name, containers: [.spec.containers[].image]}] // []' > container_images.json || echo "[]" > container_images.json
 
-      # Combine all captured information into one JSON file
-      - echo "Combining Kubernetes BoM..."
-      - jq -s '{cluster_info: .[0], nodes: .[1], deployments: .[2], services: .[3], configmaps: .[4], secrets: .[5], pods: .[6]}' cluster_info.json nodes.json deployments.json services.json configmaps.json secrets.json container_images.json > k8s_bom.json || echo "{\"error\": \"BoM generation failed\"}" > k8s_bom.json
+      # Merge All Data into k8s_bom.json
+      - |
+        jq -s '{
+          cluster_info: .[0],
+          nodes: .[1],
+          deployments: .[2],
+          services: .[3],
+          configmaps: .[4],
+          secrets: .[5],
+          pods: .[6]
+        }' cluster_info.json nodes.json deployments.json services.json configmaps.json secrets.json container_images.json > k8s_bom.json || \
+        echo '{"error": "BoM generation failed"}' > k8s_bom.json
 
   post_build:
     commands:
       - echo "Uploading BoM to S3..."
-      - aws s3 cp k8s_bom.json s3://my-k8s-bom-storage-bucket-rajani-imp-assignment/latest_k8s_bom.json || echo "Warning: S3 Upload Failed"
+      - |
+        aws s3 cp k8s_bom.json s3://my-k8s-bom-storage-bucket-rajani-imp-assignment/latest_k8s_bom.json || echo "Warning: S3 Upload Failed"
 
 artifacts:
   files:
