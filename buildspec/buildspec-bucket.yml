@@ -7,7 +7,7 @@ phases:
     commands:
       - echo "Checking if S3 bucket exists..."
       - |
-        if aws s3 ls "s3://my-k8s-bom-storage-bucket-rajani-imp-assignment" 2>&1 | grep -q 'NoSuchBucket'; then
+        if ! aws s3api head-bucket --bucket my-k8s-bom-storage-bucket-rajani-imp-assignment 2>/dev/null; then
           echo "Bucket does not exist. Creating..."
           aws s3 mb s3://my-k8s-bom-storage-bucket-rajani-imp-assignment
         else
