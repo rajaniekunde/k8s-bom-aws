@@ -1,7 +1,8 @@
 {
     "pipeline": {
       "name": "kubernetes-bom-pipeline",
-      "roleArn": "arn:aws:iam::442293912623:role/AWSCodePipelineServiceRole",
+      "roleArn": "arn:aws:iam::442293912623:role/AWSCodePipelineServiceRole-us-east-1-testpipeline",
+      
       "artifactStore": {
         "type": "S3",
         "location": "my-codepipeline-artifacts"
