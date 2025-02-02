@@ -1,10 +1,16 @@
 version: 0.2
+env:
+  variables:
+    AWS_REGION: "us-east-1"
+    EKS_CLUSTER: "my-eks-cluster"
 phases:
   install:
     runtime-versions:
       python: 3.8
   pre_build:
     commands:
+      - echo "Using AWS Region: $AWS_REGION"
+      - echo "Using EKS Cluster: $EKS_CLUSTER"
       - aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER
   build:
     commands:
@@ -19,7 +25,8 @@ phases:
       - jq -s '{cluster_info: .[0], nodes: .[1], deployments: .[2], services: .[3], configmaps: .[4], secrets: .[5], container_images: .[6]}' cluster_info.json nodes.json deployments.json services.json configmaps.json secrets.json container_images.json > k8s_bom.json
   post_build:
     commands:
-      - aws s3 cp k8s_bom.json s3://my-k8s-bom-storage/latest_k8s_bom.json
+      - echo "Uploading BoM to S3"
+      - aws s3 cp k8s_bom.json s3://my-k8s-bom-storage-bucket-rajani-imp-assignment/latest_k8s_bom.json
 artifacts:
   files:
     - k8s_bom.json
