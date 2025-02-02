@@ -1,102 +1,117 @@
 {
     "pipeline": {
-        "name": "kubernetes-bom-pipeline",
-        "roleArn": "arn:aws:iam::442293912623:role/AWSCodePipelineServiceRole",
-        "artifactStore": {
-            "type": "S3",
-            "location": "my-codepipeline-artifacts"
-        },
-        "stages": [
+      "name": "kubernetes-bom-pipeline",
+      "roleArn": "arn:aws:iam::442293912623:role/AWSCodePipelineServiceRole",
+      "artifactStore": {
+        "type": "S3",
+        "location": "my-codepipeline-artifacts"
+      },
+      "stages": [
+        {
+          "name": "Source",
+          "actions": [
             {
-                "name": "CloneGitHubRepo",
-                "actions": [
-                    {
-                        "name": "CloneRepository",
-                        "actionTypeId": {
-                            "category": "Source",
-                            "owner": "AWS",
-                            "provider": "CodeStarSourceConnection",
-                            "version": "1"
-                        },
-                        "outputArtifacts": [
-                            {
-                                "name": "SourceArtifact"
-                            }
-                        ],
-                        "configuration": {
-                            "ConnectionArn": "arn:aws:codeconnections:us-east-1:442293912623:connection/dbf03cc1-9dd2-414d-813b-529b766b902d",
-                            "FullRepositoryId": "rajaniekunde/k8s-bom-aws",
-                            "BranchName": "main"
-                        }
-                    }
-                ]
-            },
-            {
-                "name": "CreateS3Bucket",
-                "actions": [
-                    {
-                        "name": "CheckAndCreateBucket",
-                        "actionTypeId": {
-                            "category": "Build",
-                            "owner": "AWS",
-                            "provider": "CodeBuild",
-                            "version": "1"
-                        },
-                        "inputArtifacts": [
-                            {
-                                "name": "SourceArtifact"
-                            }
-                        ],
-                        "configuration": {
-                            "ProjectName": "create-k8s-bom-bucket"
-                        }
-                    }
-                ]
-            },
-            {
-                "name": "GenerateBoM",
-                "actions": [
-                    {
-                        "name": "GenerateKubernetesBoM",
-                        "actionTypeId": {
-                            "category": "Build",
-                            "owner": "AWS",
-                            "provider": "CodeBuild",
-                            "version": "1"
-                        },
-                        "inputArtifacts": [
-                            {
-                                "name": "SourceArtifact"
-                            }
-                        ],
-                        "configuration": {
-                            "ProjectName": "generate-k8s-bom"
-                        }
-                    }
-                ]
-            },
-            {
-                "name": "DeployLambda",
-                "actions": [
-                    {
-                        "name": "DeployLambdaFunction",
-                        "actionTypeId": {
-                            "category": "Build",
-                            "owner": "AWS",
-                            "provider": "CodeBuild",
-                            "version": "1"
-                        },
-                        "inputArtifacts": [
-                            {
-                                "name": "SourceArtifact"
-                            }
-                        ],
-                        "configuration": {
-                            "ProjectName": "deploy-k8s-bom-api"
-                        }
-                    }
-                ]
+              "name": "CloneRepository",
+              "actionTypeId": {
+                "category": "Source",
+                "owner": "AWS",
+                "provider": "CodeStarSourceConnection",
+                "version": "1"
+              },
+              "outputArtifacts": [
+                {
+                  "name": "SourceArtifact"
+                }
+              ],
+              "configuration": {
+                "ConnectionArn": "arn:aws:codeconnections:us-east-1:442293912623:connection/dbf03cc1-9dd2-414d-813b-529b766b902d",
+                "FullRepositoryId": "rajaniekunde/k8s-bom-aws",
+                "BranchName": "main"
+              },
+              "runOrder": 1
             }
-        ]
+          ]
+        },
+        {
+          "name": "CreateS3Bucket",
+          "actions": [
+            {
+              "name": "CheckAndCreateBucket",
+              "actionTypeId": {
+                "category": "Build",
+                "owner": "AWS",
+                "provider": "CodeBuild",
+                "version": "1"
+              },
+              "inputArtifacts": [
+                {
+                  "name": "SourceArtifact"
+                }
+              ],
+              "outputArtifacts": [
+                {
+                  "name": "BucketArtifact"
+                }
+              ],
+              "configuration": {
+                "ProjectName": "create-k8s-bom-bucket"
+              },
+              "runOrder": 1
+            }
+          ]
+        },
+        {
+          "name": "GenerateBoM",
+          "actions": [
+            {
+              "name": "GenerateKubernetesBoM",
+              "actionTypeId": {
+                "category": "Build",
+                "owner": "AWS",
+                "provider": "CodeBuild",
+                "version": "1"
+              },
+              "inputArtifacts": [
+                {
+                  "name": "SourceArtifact"
+                }
+              ],
+              "outputArtifacts": [
+                {
+                  "name": "BoMArtifact"
+                }
+              ],
+              "configuration": {
+                "ProjectName": "generate-k8s-bom"
+              },
+              "runOrder": 1
+            }
+          ]
+        },
+        {
+          "name": "DeployLambda",
+          "actions": [
+            {
+              "name": "DeployLambdaFunction",
+              "actionTypeId": {
+                "category": "Build",
+                "owner": "AWS",
+                "provider": "CodeBuild",
+                "version": "1"
+              },
+              "inputArtifacts": [
+                {
+                  "name": "SourceArtifact"
+                }
+              ],
+              "configuration": {
+                "ProjectName": "deploy-k8s-bom-api"
+              },
+              "runOrder": 1
+            }
+          ]
+        }
+      ],
+      "version": 1
     }
-}
+  }
