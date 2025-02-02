@@ -54,7 +54,8 @@
                 }
               ],
               "configuration": {
-                "ProjectName": "create-k8s-bom-bucket2"
+                "ProjectName": "create-k8s-bom-bucket2",
+                "ServiceRole": "arn:aws:iam::442293912623:role/AWSCodeBuildServiceRole"
               },
               "runOrder": 1
             }
@@ -82,7 +83,8 @@
                 }
               ],
               "configuration": {
-                "ProjectName": "generate-k8s-bom"
+                "ProjectName": "generate-k8s-bom2",
+                "ServiceRole": "arn:aws:iam::442293912623:role/AWSCodeBuildServiceRole"
               },
               "runOrder": 1
             }
@@ -105,7 +107,8 @@
                 }
               ],
               "configuration": {
-                "ProjectName": "deploy-k8s-bom-api"
+                "ProjectName": "deploy-k8s-bom-api2",
+                "ServiceRole": "arn:aws:iam::442293912623:role/AWSCodeBuildServiceRole"
               },
               "runOrder": 1
             }
