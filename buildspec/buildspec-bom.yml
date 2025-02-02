@@ -16,6 +16,7 @@ phases:
     commands:
       - echo "Updating kubeconfig..."
       - aws eks --region "$AWS_REGION" update-kubeconfig --name "$EKS_CLUSTER"
+      - aws sts get-caller-identity
 
   build:
     commands:

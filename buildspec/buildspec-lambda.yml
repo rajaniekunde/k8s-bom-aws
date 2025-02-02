@@ -9,6 +9,8 @@ phases:
       - pip install -r lambda/requirements.txt -t lambda/
       - echo "Zipping Lambda function..."
       - cd lambda && zip -r deployment_package.zip ./*
+      - pwd
+      - ls
   post_build:
     commands:
       - echo "Deploying Lambda function..."
