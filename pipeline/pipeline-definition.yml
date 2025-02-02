@@ -1,0 +1,31 @@
+stages:
+  - name: CreateS3Bucket
+    actions:
+      - name: CheckAndCreateBucket
+        actionTypeId:
+          category: Build
+          owner: AWS
+          provider: CodeBuild
+          version: "1"
+        configuration:
+          ProjectName: create-k8s-bom-bucket
+  - name: GenerateBoM
+    actions:
+      - name: GenerateKubernetesBoM
+        actionTypeId:
+          category: Build
+          owner: AWS
+          provider: CodeBuild
+          version: "1"
+        configuration:
+          ProjectName: generate-k8s-bom
+  - name: DeployLambda
+    actions:
+      - name: DeployLambdaFunction
+        actionTypeId:
+          category: Build
+          owner: AWS
+          provider: CodeBuild
+          version: "1"
+        configuration:
+          ProjectName: deploy-k8s-bom-api

@@ -1,0 +1,18 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+  build:
+    commands:
+      - echo "Installing dependencies for Lambda..."
+      - pip install -r lambda/requirements.txt -t lambda/
+      - echo "Zipping Lambda function..."
+      - cd lambda && zip -r deployment_package.zip ./*
+  post_build:
+    commands:
+      - echo "Deploying Lambda function..."
+      - aws lambda update-function-code --function-name k8s-bom-api --zip-file fileb://lambda/deployment_package.zip
+artifacts:
+  files:
+    - lambda/deployment_package.zip
