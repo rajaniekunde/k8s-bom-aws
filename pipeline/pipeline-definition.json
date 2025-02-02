@@ -1,8 +1,7 @@
 {
     "pipeline": {
-      "name": "kubernetes-bom-pipeline",
-      "roleArn": "arn:aws:iam::442293912623:role/service-role/AWSCodePipelineServiceRole-us-east-1-testpipeline",
-
+      "name": "kubernetes-bom-pipeline2",
+      "roleArn": "arn:aws:iam::442293912623:role/AWSCodePipelineServiceRole",
       "artifactStore": {
         "type": "S3",
         "location": "my-codepipeline-artifactsh93fhoitf903903hg9034h3g9"
@@ -55,7 +54,7 @@
                 }
               ],
               "configuration": {
-                "ProjectName": "create-k8s-bom-bucket"
+                "ProjectName": "create-k8s-bom-bucket2"
               },
               "runOrder": 1
             }

@@ -7,9 +7,9 @@ phases:
     commands:
       - echo "Checking if S3 bucket exists..."
       - |
-        if ! aws s3api head-bucket --bucket my-k8s-bom-storage-bucket-rajani-imp-assignment 2>/dev/null; then
-          echo "Bucket does not exist. Creating..."
-          aws s3 mb s3://my-k8s-bom-storage-bucket-rajani-imp-assignment
-        else
+        if aws s3api head-bucket --bucket my-k8s-bom-storage-bucket-rajani-imp-assignment 2>/dev/null; then
           echo "Bucket already exists. Skipping creation."
+        else
+          echo "Bucket does not exist. Creating..."
+          aws s3api create-bucket --bucket my-k8s-bom-storage-bucket-rajani-imp-assignment --region $AWS_REGION
         fi
