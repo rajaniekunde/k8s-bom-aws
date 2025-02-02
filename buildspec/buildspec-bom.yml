@@ -22,7 +22,7 @@ phases:
   build:
     commands:
       - echo "Generating Kubernetes Bill of Materials (BoM)..."
-
+      
       # Capture cluster information
       - kubectl cluster-info dump > cluster_info.json || echo "{}" > cluster_info.json
 
@@ -41,11 +41,12 @@ phases:
       # Capture secrets
       - kubectl get secrets --all-namespaces -o json > secrets.json || echo "[]" > secrets.json
 
-      # Capture pods, ensuring empty result if no pods exist
+      # Capture pods
       - kubectl get pods --all-namespaces -o json | jq '[.items[]? | {namespace: .metadata.namespace, pod: .metadata.name, containers: [.spec.containers[].image]}] // []' > container_images.json || echo "[]" > container_images.json
 
       # Merge All Data into k8s_bom.json
-      - jq -s '{
+      - >
+        jq -s '{
           "cluster_info": .[0],
           "nodes": .[1],
           "deployments": .[2],
@@ -53,8 +54,8 @@ phases:
           "configmaps": .[4],
           "secrets": .[5],
           "pods": .[6]
-        }' cluster_info.json nodes.json deployments.json services.json configmaps.json secrets.json container_images.json > k8s_bom.json || \
-        echo '{"error": "BoM generation failed"}' > k8s_bom.json
+        }' cluster_info.json nodes.json deployments.json services.json configmaps.json secrets.json container_images.json > k8s_bom.json
+        || echo '{"error": "BoM generation failed"}' > k8s_bom.json
 
   post_build:
     commands:
