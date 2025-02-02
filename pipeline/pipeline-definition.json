@@ -5,7 +5,7 @@
 
       "artifactStore": {
         "type": "S3",
-        "location": "my-codepipeline-artifacts"
+        "location": "my-codepipeline-artifactsh93fhoitf903903hg9034h3g9"
       },
       "stages": [
         {
