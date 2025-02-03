@@ -6,7 +6,7 @@ set -o pipefail  # Catch pipeline failures
 echo "Generating Kubernetes Bill of Materials (BoM)..."
 
 AWS_REGION="us-east-1"
-EKS_CLUSTER="confused-indie-orca"
+EKS_CLUSTER="mynewk8scluster"
 S3_BUCKET="my-k8s-bom-storage-bucket-rajani-imp-assignment"
 
 # Ensure kubeconfig is updated
