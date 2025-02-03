@@ -4,7 +4,7 @@ import os
 
 # Initialize AWS S3 Client
 s3_client = boto3.client('s3')
-S3_BUCKET = os.environ['S3_BUCKET']  # Set this in Lambda environment variables
+S3_BUCKET = "my-k8s-bom-storage-bucket-rajani-imp-assignment"  # Set this in Lambda environment variables
 
 def lambda_handler(event, context):
     """
