@@ -2,7 +2,7 @@ import json
 import boto3
 
 s3 = boto3.client("s3")
-BUCKET_NAME = "my-k8s-bom-storage"
+BUCKET_NAME = "my-k8s-bom-storage-bucket-rajani-imp-assignment"
 BOM_FILE = "latest_k8s_bom.json"
 
 def lambda_handler(event, context):
