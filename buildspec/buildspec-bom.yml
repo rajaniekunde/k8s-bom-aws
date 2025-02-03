@@ -2,7 +2,7 @@ version: 0.2
 env:
   variables:
     AWS_REGION: "us-east-1"
-    EKS_CLUSTER: "confused-indie-orca"
+    EKS_CLUSTER: "mynewk8scluster"
 
 phases:
   install:
